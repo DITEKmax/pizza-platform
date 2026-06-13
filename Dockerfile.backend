@@ -1,0 +1,25 @@
+FROM maven:3.9-eclipse-temurin-21 AS build
+WORKDIR /src
+
+COPY pom.xml .
+COPY pizza-order-contract/pom.xml   pizza-order-contract/
+COPY pizza-events-contract/pom.xml  pizza-events-contract/
+COPY pizza-grpc-contract/pom.xml    pizza-grpc-contract/
+COPY order-service/pom.xml          order-service/
+COPY audit-service/pom.xml          audit-service/
+COPY grpc-kitchen-analytics-server/pom.xml  grpc-kitchen-analytics-server/
+COPY grpc-order-enrichment-client/pom.xml   grpc-order-enrichment-client/
+COPY notification-service/pom.xml   notification-service/
+RUN mvn -B -q dependency:go-offline || true
+
+COPY . .
+RUN mvn -B clean package -DskipTests
+
+FROM eclipse-temurin:21-jre-jammy AS runtime
+WORKDIR /app
+
+ARG SERVICE
+
+COPY --from=build /src/${SERVICE}/target/*.jar app.jar
+
+ENTRYPOINT ["java", "-jar", "app.jar"]

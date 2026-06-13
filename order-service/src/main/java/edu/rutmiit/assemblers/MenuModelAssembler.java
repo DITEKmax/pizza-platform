@@ -14,8 +14,15 @@ public class MenuModelAssembler implements RepresentationModelAssembler<MenuItem
 
     @Override
     public EntityModel<MenuItemResponse> toModel(MenuItemResponse menuItem) {
-        return EntityModel.of(menuItem,
+        EntityModel<MenuItemResponse> model = EntityModel.of(menuItem,
                 linkTo(methodOn(MenuController.class).getMenuItemById(menuItem.getId())).withSelfRel(),
                 linkTo(methodOn(MenuController.class).getAllMenuItems(null, null, 0, 20)).withRel("collection"));
+
+        if (Boolean.TRUE.equals(menuItem.getAvailable())) {
+            model.add(
+                    linkTo(methodOn(MenuController.class).patchMenuItem(menuItem.getId(), null)).withRel("archive"));
+        }
+
+        return model;
     }
 }

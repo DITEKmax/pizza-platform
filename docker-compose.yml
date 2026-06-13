@@ -1,0 +1,70 @@
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  order-service:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+      args:
+        SERVICE: order-service
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_RABBITMQ_HOST: rabbitmq
+    depends_on:
+      - rabbitmq
+
+  audit-service:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+      args:
+        SERVICE: audit-service
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_RABBITMQ_HOST: rabbitmq
+    depends_on:
+      - rabbitmq
+
+  grpc-kitchen-analytics-server:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+      args:
+        SERVICE: grpc-kitchen-analytics-server
+    ports:
+      - "8083:8083"
+      - "9090:9090"
+
+  grpc-order-enrichment-client:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+      args:
+        SERVICE: grpc-order-enrichment-client
+    ports:
+      - "8082:8082"
+    environment:
+      SPRING_RABBITMQ_HOST: rabbitmq
+      GRPC_CLIENT_KITCHEN-ANALYTICS-SERVER_HOST: grpc-kitchen-analytics-server
+    depends_on:
+      - rabbitmq
+      - grpc-kitchen-analytics-server
+
+  notification-service:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+      args:
+        SERVICE: notification-service
+    ports:
+      - "8084:8084"
+    environment:
+      SPRING_RABBITMQ_HOST: rabbitmq
+    depends_on:
+      - rabbitmq
