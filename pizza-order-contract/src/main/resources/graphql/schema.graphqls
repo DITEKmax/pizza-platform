@@ -1,0 +1,125 @@
+scalar DateTime
+scalar BigDecimal
+
+type MenuItem {
+    id: ID!
+    name: String!
+    description: String!
+    price: BigDecimal!
+    available: Boolean!
+}
+
+type Order {
+    id: ID!
+    customerId: ID!
+    status: OrderStatus!
+    deliveryAddress: String!
+    items: [OrderItem!]!
+    totalPrice: BigDecimal!
+    createdAt: DateTime!
+    updatedAt: DateTime
+    phoneNumber: String!
+}
+
+enum OrderStatus {
+    CREATED
+    COOKING
+    READY
+    DELIVERING
+    DELIVERED
+    CANCELLED
+}
+
+type OrderItem {
+    pizzaId: ID!
+    pizzaName: String!
+    quantity: Int!
+    unitPrice: BigDecimal!
+}
+
+type MenuItemConnection {
+    content: [MenuItem!]!
+    pageInfo: PageInfo!
+    totalElements: Int!
+}
+
+type OrderConnection {
+    content: [Order!]!
+    pageInfo: PageInfo!
+    totalElements: Int!
+}
+
+type PageInfo {
+    pageNumber: Int!
+    pageSize: Int!
+    totalPages: Int!
+    last: Boolean!
+}
+
+input CreateOrderInput {
+    customerId: ID!
+    deliveryAddress: String!
+    items: [OrderItemInput!]!
+    phoneNumber: String!
+}
+
+input OrderItemInput {
+    pizzaId: ID!
+    quantity: Int!
+}
+
+input CreateMenuItemInput {
+    name: String!
+    description: String!
+    price: BigDecimal!
+    available: Boolean!
+}
+
+input UpdateMenuItemInput {
+    name: String!
+    description: String!
+    price: BigDecimal!
+    available: Boolean!
+}
+
+input PatchMenuItemInput {
+    name: String
+    description: String
+    price: BigDecimal
+    available: Boolean
+}
+
+input MenuItemFilter {
+    available: Boolean
+    name: String
+}
+
+input OrderFilter {
+    customerId: ID
+    status: OrderStatus
+}
+
+type Query {
+    menuItem(id: ID!): MenuItem
+
+    menuItems(filter: MenuItemFilter, page: Int = 0, size: Int = 20): MenuItemConnection!
+
+    order(id: ID!): Order
+
+    orders(filter: OrderFilter, page: Int = 0, size: Int = 20): OrderConnection!
+}
+
+type Mutation {
+    createMenuItem(input: CreateMenuItemInput!): MenuItem!
+
+    updateMenuItem(id: ID!, input: UpdateMenuItemInput!): MenuItem!
+
+    patchMenuItem(id: ID!, input: PatchMenuItemInput!): MenuItem!
+
+    deleteMenuItem(id: ID!): Boolean!
+
+    createOrder(input: CreateOrderInput!): Order!
+
+    cancelOrder(id: ID!): Order!
+}
+
