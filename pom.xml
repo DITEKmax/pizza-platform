@@ -19,14 +19,21 @@
     <modules>
         <module>pizza-order-contract</module>
         <module>pizza-events-contract</module>
+        <module>pizza-grpc-contract</module>
 
         <module>order-service</module>
         <module>audit-service</module>
+
+        <module>grpc-kitchen-analytics-server</module>
+        <module>grpc-order-enrichment-client</module>
 
     </modules>
 
     <properties>
         <java.version>21</java.version>
+        <protobuf.version>3.25.5</protobuf.version>
+        <protobuf-plugin.version>0.6.1</protobuf-plugin.version>
+        <grpc.version>1.66.0</grpc.version>
     </properties>
 
 </project>

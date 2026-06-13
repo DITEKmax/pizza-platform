@@ -15,6 +15,7 @@ type Order {
     status: OrderStatus!
     deliveryAddress: String!
     items: [OrderItem!]!
+    totalQuantity: Int!
     totalPrice: BigDecimal!
     createdAt: DateTime!
     updatedAt: DateTime

@@ -68,8 +68,8 @@ public class AuditEventListener {
         return switch (eventType) {
             case RoutingKeys.ORDER_CREATED -> {
                 OrderEvent.Created e = jsonMapper.treeToValue(payloadNode, OrderEvent.Created.class);
-                yield String.format("Создан заказ #%d для клиента %d на сумму %s ₽ (позиций: %d)",
-                        e.orderId(), e.customerId(), e.totalPrice(), e.itemsCount());
+                yield String.format("Создан заказ #%d для клиента %d на сумму %s ₽ (позиций: %d, пицц: %d)",
+                        e.orderId(), e.customerId(), e.totalPrice(), e.itemsCount(), e.totalQuantity());
             }
             case RoutingKeys.ORDER_CANCELLED -> {
                 OrderEvent.Cancelled e = jsonMapper.treeToValue(payloadNode, OrderEvent.Cancelled.class);
@@ -90,6 +90,12 @@ public class AuditEventListener {
                 MenuItemEvent.Deleted e = jsonMapper.treeToValue(payloadNode, MenuItemEvent.Deleted.class);
                 yield String.format("Удалена пицца #%d «%s»",
                         e.menuItemId(), e.name());
+            }
+            case RoutingKeys.ORDER_ENRICHED -> {
+                OrderEvent.Enriched e = jsonMapper.treeToValue(payloadNode, OrderEvent.Enriched.class);
+                yield String.format("Заказ #%d обогащён кухонной аналитикой: готовка ~%d мин, загрузка=%s, приоритет=%s, упаковка=%.1f/10, рекомендация: %s",
+                        e.orderId(), e.estimatedCookingMinutes(), e.kitchenLoadLevel(), e.priorityLevel(), e.packagingComplexityScore(), e.recommendation()
+                );
             }
             default -> "Неизвестное событие: " + eventType;
         };

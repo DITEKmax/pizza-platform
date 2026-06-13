@@ -167,6 +167,12 @@ public class InMemoryStorage {
                 .build();
     }
 
+    private Integer calculateTotalQuantity(List<OrderResponse.OrderItemResponse> items) {
+        return items.stream()
+                .mapToInt(item -> item.getQuantity())
+                .sum();
+    }
+
     private void addMenuItem(String name, String description, String price) {
         MenuItemResponse item = MenuItemResponse.builder()
                 .id(menuSequence.incrementAndGet())
@@ -190,6 +196,7 @@ public class InMemoryStorage {
                 .status(orderStatus)
                 .deliveryAddress(deliveryAddress)
                 .items(items)
+                .totalQuantity(calculateTotalQuantity(items))
                 .totalPrice(new BigDecimal(totalPrice))
                 .createdAt(createdAt)
                 .updatedAt(updatedAt)

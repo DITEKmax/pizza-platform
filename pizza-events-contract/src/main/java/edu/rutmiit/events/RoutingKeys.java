@@ -10,6 +10,7 @@ public final class RoutingKeys {
     public static final String MENU_ITEM_UPDATED = "menuitem.updated";
     public static final String MENU_ITEM_DELETED = "menuitem.deleted";
 
+    public static final String ORDER_ENRICHED = "order.enriched";
     public static final String ORDER_CREATED = "order.created";
     public static final String ORDER_CANCELLED = "order.cancelled";
 

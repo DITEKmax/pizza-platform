@@ -59,7 +59,7 @@ public class OrderService {
         return new PagedResponse<>(content, page, size, totalElements, totalPages, page >= totalPages - 1);
     }
 
-    public OrderResponse createOrder (CreateOrderRequest request){
+    public OrderResponse createOrder(CreateOrderRequest request) {
         List<OrderResponse.OrderItemResponse> items = new ArrayList<>();
 
         for (CreateOrderRequest.OrderItemRequest reqItem : request.items()) {
@@ -81,6 +81,8 @@ public class OrderService {
             totalPrice = totalPrice.add(lineSum);
         }
 
+        Integer totalQuantity = calculateTotalQuantity(items);
+
         long id = storage.orderSequence.incrementAndGet();
 
         OrderResponse order = OrderResponse.builder()
@@ -89,10 +91,12 @@ public class OrderService {
                 .status(OrderStatus.CREATED)
                 .deliveryAddress(request.deliveryAddress())
                 .items(items)
+                .totalQuantity(totalQuantity)
                 .totalPrice(totalPrice)
                 .createdAt(Instant.now())
                 .phoneNumber(request.phoneNumber())
                 .build();
+
         storage.order.put(id, order);
         orderEventPublisher.publishCreated(order);
         return order;
@@ -108,6 +112,7 @@ public class OrderService {
                 .status(OrderStatus.CANCELLED)
                 .deliveryAddress(existing.getDeliveryAddress())
                 .items(existing.getItems())
+                .totalQuantity(existing.getTotalQuantity())
                 .totalPrice(existing.getTotalPrice())
                 .createdAt(existing.getCreatedAt())
                 .updatedAt(Instant.now())
@@ -118,12 +123,17 @@ public class OrderService {
         return cancelled;
     }
 
-
     private void checkOrderOfPossibleToCancel(OrderResponse response, Long id){
         OrderStatus status = response.getStatus();
         if (status == OrderStatus.DELIVERING || status == OrderStatus.DELIVERED
                 || status == OrderStatus.CANCELLED) {
             throw new OrderNotCancellableException(id, status.toString());
         }
+    }
+
+    private Integer calculateTotalQuantity(List<OrderResponse.OrderItemResponse> items){
+        return items.stream()
+                .mapToInt(item -> item.getQuantity())
+                .sum();
     }
 }

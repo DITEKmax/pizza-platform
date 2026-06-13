@@ -26,7 +26,8 @@ public class OrderEventPublisher {
                 order.getId(),
                 order.getCustomerId(),
                 order.getTotalPrice(),
-                order.getItems().size()
+                order.getItems().size(),
+                order.getTotalQuantity()
         );
         send(RoutingKeys.ORDER_CREATED, event);
     }

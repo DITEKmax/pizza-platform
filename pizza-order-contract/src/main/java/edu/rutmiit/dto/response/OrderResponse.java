@@ -36,6 +36,9 @@ public class OrderResponse extends RepresentationModel<OrderResponse> {
     @Schema(description = "Позиции заказа")
     private final List<OrderItemResponse> items;
 
+    @Schema(description = "Общее количество пицц в заказе", example = "3")
+    private final Integer totalQuantity;
+
     @Schema(description = "Итоговая сумма заказа", example = "1290.00")
     private final BigDecimal totalPrice;
 

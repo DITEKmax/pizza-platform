@@ -2,8 +2,10 @@
 <project version="4">
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/audit-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/grpc-kitchen-analytics-server/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/order-service/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/pizza-events-contract/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pizza-grpc-contract/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/pizza-order-contract/order-service/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/pizza-order-contract/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/pizza-order-contract/src/main/resources" charset="UTF-8" />
